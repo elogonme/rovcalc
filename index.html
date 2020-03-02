@@ -2,74 +2,91 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600" rel="stylesheet"
-        type="text/css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
         <link type="text/css" rel="stylesheet" href="style.css">
         <title>ROV Dive Time Calculator</title>
     </head>
     <body>
     
-        <div class="top">
-            <div class="header">
+        <div class="container bg-light rounded top mt-5">
+            <h3 class="mt-2">
                 ROV Dive Time Calculator
-            </div>
-            <div class="start_date">
-                Start Date
-            </div>
-            <div class = "end_date">
-                 End Date
-            </div >
-            <div class="s_day" >
-                <input type="date" id="sday" name="stday"
-                   value="2020-01-15">
-            </div>
-            <div class="e_day" >
-                <input type="date" id="eday" name="enday"
-                   value="2020-01-15">
-            </div>
-            <div class="start_time">
-                Start Time
-            </div>
-            <div class = "end_time">
-                 End Time
-            </div >
-            <div class="s_time" id="stime" name="stime">
-                <input type="time" id="sttime" name="sttime"
-                   value="01:00">
-            </div>
-            <div class="e_time" id="etime" name="etime">
-                <input type="time" id="entime" name="entime"
-                   value="01:00">
-            </div>
-            <div>
-                <input class="prop" type="image" id="submitprop" src="prop.png" alt="ROV prop">
-            </div>
-            
-            <button class="calc-btn" id="calc-btn" type="submit">Calculate</button>
-            
-            <div class="tdt">
-                Total Dive Time
-                <div class="tdays" id="calcd-name">days</div>
-                <div class="tdays-value" id="calcd"  >05</div>
-                <div class="thrs" id="calch-name">hours</div>
-                <div class="thrs-value" id="calch">55</div>
-                <div class="tmins" id="calcm-name" >min</div>
-                <div class="tmins-value" id="calcm">01</div>
-            </div>
-            <div>
-                <input class="rovel" type="image" id="submitrovel" src="rovel.png" alt="ROVEL logo">
-            </div>
-            <div class="total-hours" id="total-hours"> 
-                Totlal Full Hours
-                <div  style="color: red;" id="tothrs">120
+            </h3>
+            <div class="row my-2 justify-content-around">
+                <div class="col-xs-6">
+                    <div class="start_date">
+                        Start Date
+                    </div>
+                    <div class="s_day">
+                        <input type="date" id="sday" name="stday"value="2020-01-15">
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class = "end_date">
+                        End Date
+                   </div >
+                   <div class="e_day" >
+                       <input type="date" id="eday" name="enday" value="2020-01-15">
+                   </div>
                 </div>
             </div>
-            <div class="total-minutes" id="total-minutes"> 
-                Totlal Minutes
-                <div  id="totmins" style="color: red;">640
-                </div>
+            <div class="row justify-content-center">
+                <div class="col-xs-1 mr-5">
+                    <div class="start_time">
+                        Start Time
+                    </div>
+                    <div class="s_time" id="stime" name="stime">
+                        <input type="time" id="sttime" name="sttime" value="01:00">
+                    </div>
+                </div>   
+                <input class="col-xs-1 prop" type="image" id="submitprop" src="prop.png" alt="ROV prop"> 
+                <div class="col-xs-1 ml-5">
+                    <div class = "end_time">
+                        End Time
+                    </div > 
+                    <div class="e_time" id="etime" name="etime">
+                        <input type="time" id="entime" name="entime" value="01:00">
+                    </div>
+                </div>    
+            </div>
+            <div id="calcdata" class="animated calcdata">
+                <div class="row justify-content-around text-primary">
+                    <div class="tdata">
+                         <div class="col-xs-3">
+                             <div id="total-hours">Totlal Full Hours</div>
+                             <div  style="color: red;" id="tothrs">0</div>
+                         </div>
+                    </div> 
+                     <button class="col-xs-3 calc-btn my-3 ml-2 mr-2 btn btn-outline-primary align-center" id="calc-btn" type="submit" onclick="getUIData()">Calculate</button>  
+                     <div class="tdata">
+                         <div class="col-xs-3">
+                             <div class="col-xs-3" id="total-minutes">Totlal Minutes</div>
+                             <div  id="totmins" style="color: red;">50</div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row justify-content-around font-weight-bold tdata">Total Dive Time </div>
+                 <div class="row justify-content-around tdata text-primary">
+                     <div class="col-xs-3">
+                         <div class="tdays" id="calcd-name">days</div>
+                         <div class="tdays-value text-danger" id="calcd">05</div>
+                     </div>
+                     <div class="col-xs-3">
+                         <div class="thrs" id="calch-name">hours</div>
+                         <div class="thrs-value text-danger" id="calch">55</div>
+                     </div>
+                     <div class="col-xs-3">
+                         <div class="tmins" id="calcm-name" >min</div>
+                         <div class="tmins-value text-danger" id="calcm">01</div>
+                     </div>
+                 </div>
             </div>
             
+            <div class="row mx-auto d-block img-fluid">
+                <input class="rovel animated pulse" type="image" id="submitrovel" src="rovel.png" alt="ROVEL logo">
+            </div>
+        </div>
         <script src="calc.js"></script>
     </body>      
 </html>

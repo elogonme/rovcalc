@@ -13,10 +13,10 @@
 */
 
 var data = {
-    dateSt: '2020-02-20',
-    dateEn: '2020-02-21',
-    timeSt: '10:00',
-    timeEn: '12:00',
+    dateSt: '',
+    dateEn: '',
+    timeSt: '',
+    timeEn: '',
     sDays: 1,
     eDays: 2,
     sHrs: 22,
@@ -32,106 +32,34 @@ var data = {
 } 
 
 //////////////////////////////////
-//Total Dive Time Calculator
-function calcTDT (dta){
-    // Calculate Days
-    if ((dta.eDays - dta.sDays) < 0) {
-        dta.tDays = 0;
-        dta.err = 1; // return error if total days negative
-        return 
-    } else {
-        dta.tDays = dta.eDays - dta.sDays;
-    }
-    //Calculate hours
-    if ((dta.eHrs - dta.sHrs) < 0) {
-        dta.tDays -= 1;
-        if (dta.tDays < 0) {
-            dta.err = 1; // return error if total days negative
-            return;
-        } else {
-            dta.tHrs = 24 + dta.eHrs - dta.sHrs;
-        }
-    } else {
-        dta.tHrs = dta.eHrs - dta.sHrs;
-    }
-    //Calculate minutes
-    if ((dta.eMins - dta.sMins) < 0) {
-        if (dta.tHrs === 0){
-            dta.tDays -= 1;
-            if (dta.tDays < 0) {
-            dta.err = 1; // return error if total days negative
-            return;
-            } else {
-             dta.tMins = 60 + dta.eMins - dta.sMins;   
-            }  
-            } else {
-            dta.tHrs -= 1;
-            dta.tMins = 60 + dta.eMins - dta.sMins;
-        }  
-    } else {
-        dta.tMins = dta.eMins - dta.sMins;
-    };
-   // console.log(dta.tDays + ' days: ' + dta.tHrs + ':' + dta.tMins);
-    dta.totHrs = dta.tDays*24 + dta.tHrs;
-    dta.totMins = dta.totHrs*60 + dta.tMins;
-  //  console.log(data.totHrs,data.totMins);
-}
-/////////////////////////////////////
+//Total Dive Time Calculator 
+
 // UI data get Input, check and calc
 
-function getUIData (dta){
+function getUIData (dta=data){
+
     //get Data from Start/End date and Start/End time of UI
     dta.dateSt = document.getElementById('sday').value;
     dta.dateEn = document.getElementById('eday').value;
     dta.timeSt = document.getElementById('sttime').value;
     dta.timeEn = document.getElementById('entime').value;
-    
-    //extract start end end days
-    dta.sDays = parseInt(dta.dateSt.slice(8));
-    dta.eDays = parseInt(dta.dateEn.slice(8));
-    
-    //extract start and end hours and minutes
-    dta.sHrs = parseInt(dta.timeSt); 
-    dta.eHrs = parseInt(dta.timeEn);
-    dta.sMins = parseInt(dta.timeSt.slice(3));
-    dta.eMins = parseInt(dta.timeEn.slice(3));
-    calcTDT(data);
-    if (data.err === 1) {
-    console.log('Wrong input!');
-        data.err = 0;
-        alert('Wrong input! End date/time is less than start date/time');
-        return;
-    } else {
-    //   console.log(data);
-        updateUIresult();
-    }
-};
 
+    var start = new Date(dta.dateSt + 'T' + dta.timeSt);
+    var end = new Date(dta.dateEn + 'T' + dta.timeEn);
 
+    var totalDiveTime = end - start;
 
-////////////////////////////////////
-// Global app Controller
+    dta.tDays = Math.floor(totalDiveTime / 86400000);
+    dta.tHrs = Math.floor((totalDiveTime - dta.tDays * 86400000) / 3600000);
+    dta.tMins = Math.floor((totalDiveTime - dta.tDays * 86400000 - dta.tHrs * 3600000) / 60000)
 
-var controller = function() {
-   
-   //get input from page button
- //   document.querySelector('.prop').addEventListener('click', getUIData(data)); 
-    function getAndCalc(){
-        getUIData(data);
-    }
-    
-    document.getElementById('calc-btn').addEventListener("click", getAndCalc); 
-    
-    document.getElementById('submitprop').addEventListener("click", getAndCalc); 
-    
-    // get keyboard press event
-    document.addEventListener('keypress',function(event){
-        // if ENTER is pressed
-        if (event.keyCode === 13 || event.which === 13) {
-                getAndCalc;
-                }
-    }) 
-    
+    dta.totHrs = dta.tDays*24 + dta.tHrs;
+    dta.totMins = dta.totHrs*60 + dta.tMins;
+
+    if (totalDiveTime < 0) {
+         alert('Wrong input! End date/time is less than start date/time');
+        return; }
+    updateUIresult();
 };
 
 var updateUIresult = function (){
@@ -157,12 +85,13 @@ var updateUIresult = function (){
     document.querySelector("#tothrs").textContent = data.totHrs;
     document.querySelector("#totmins").textContent = data.totMins;
     
-    document.querySelector('.rovel').style.display = 'none'; //Hide logo
+    document.getElementById("calcdata").classList.add('fadeIn');
+    document.getElementById("submitrovel").classList.remove('pulse');
+    document.getElementById("submitrovel").classList.add('invisible');
     
-    document.querySelector('.tdt').style.display = 'block'; // Display Total Dive time
-    document.querySelector('.total-hours').style.display = 'block';
-    document.querySelector('.total-minutes').style.display = 'block';
-}
+    switchTotalData('flex'); 
+
+};
 
 // Get today's day function
 function todaysDate () {
@@ -179,15 +108,20 @@ date = d.getFullYear() + '-' + mm + '-' + dd;
     data.dateSt = data.dateEn = date;
 }
 
+// hide or display Total dive times
+function switchTotalData(disp) {
+    var x = document.getElementsByClassName("tdata");
+    var i;
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = disp;
+    }
+}
+
 // BEGIN app
 // Set today's date in input dates
 todaysDate();
 document.querySelector("#sday").value = data.dateSt;
 document.querySelector("#eday").value = data.dateEn;
-document.querySelector('.tdt').style.display = 'none'; // hide display of Total dive times in the beginning
 
-document.querySelector('.total-hours').style.display = 'none';
-document.querySelector('.total-minutes').style.display = 'none';
-//console.log(data);
-controller();
-
+/// hide display of Total dive times in the beginning
+switchTotalData('none');
