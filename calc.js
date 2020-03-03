@@ -17,12 +17,12 @@ var data = {
     dateEn: '',
     timeSt: '',
     timeEn: '',
-    sDays: 1,
-    eDays: 2,
-    sHrs: 22,
-    eHrs: 22,
-    sMins: 20,
-    eMins: 10,
+    sDays: 0,
+    eDays: 0,
+    sHrs: 0,
+    eHrs: 0,
+    sMins: 0,
+    eMins: 0,
     tMins: 0,
     tHrs: 0,
     tDays: 0,
@@ -36,25 +36,25 @@ var data = {
 
 // UI data get Input, check and calc
 
-function getUIData (dta=data){
+function calcDiveTime (){
 
     //get Data from Start/End date and Start/End time of UI
-    dta.dateSt = document.getElementById('sday').value;
-    dta.dateEn = document.getElementById('eday').value;
-    dta.timeSt = document.getElementById('sttime').value;
-    dta.timeEn = document.getElementById('entime').value;
+    data.dateSt = document.getElementById('sday').value;
+    data.dateEn = document.getElementById('eday').value;
+    data.timeSt = document.getElementById('sttime').value;
+    data.timeEn = document.getElementById('entime').value;
 
-    var start = new Date(dta.dateSt + 'T' + dta.timeSt);
-    var end = new Date(dta.dateEn + 'T' + dta.timeEn);
+    var start = new Date(data.dateSt + 'T' + data.timeSt);
+    var end = new Date(data.dateEn + 'T' + data.timeEn);
 
     var totalDiveTime = end - start;
 
-    dta.tDays = Math.floor(totalDiveTime / 86400000);
-    dta.tHrs = Math.floor((totalDiveTime - dta.tDays * 86400000) / 3600000);
-    dta.tMins = Math.floor((totalDiveTime - dta.tDays * 86400000 - dta.tHrs * 3600000) / 60000)
+    data.tDays = Math.floor(totalDiveTime / 86400000);
+    data.tHrs = Math.floor((totalDiveTime - data.tDays * 86400000) / 3600000);
+    data.tMins = Math.floor((totalDiveTime - data.tDays * 86400000 - data.tHrs * 3600000) / 60000)
 
-    dta.totHrs = dta.tDays*24 + dta.tHrs;
-    dta.totMins = dta.totHrs*60 + dta.tMins;
+    data.totHrs = data.tDays*24 + data.tHrs;
+    data.totMins = data.totHrs*60 + data.tMins;
 
     if (totalDiveTime < 0) {
          alert('Wrong input! End date/time is less than start date/time');
@@ -62,26 +62,17 @@ function getUIData (dta=data){
     updateUIresult();
 };
 
-var updateUIresult = function (){
+function updateUIresult() {
     //Updated calculated total times on UI
     var tds, ths, tmin;
-    // Check if days, hours, mins are single digit and add second zero
-    if (data.tMins <= 9){
-        tmin = '0' + data.tMins;
-    } else tmin = data.tMins;
     
-    if (data.tHrs <= 9){
-        ths = '0' + data.tHrs;
-    } else ths = data.tHrs;
-    
-    if (data.tDays <= 9){
-        tds = '0' + data.tDays;
-    } else tds = data.tDays;
+    tmin = ('0' + data.tMins).slice(-2);
+    ths = ('0' + data.tHrs).slice(-2);
+    tds = ('0' + data.tDays).slice(-2);
     
     document.querySelector("#calcd").textContent = tds;
     document.querySelector("#calch").textContent = ths;
     document.querySelector("#calcm").textContent = tmin;
-    
     document.querySelector("#tothrs").textContent = data.totHrs;
     document.querySelector("#totmins").textContent = data.totMins;
     
@@ -93,8 +84,18 @@ var updateUIresult = function (){
 
 };
 
-// Get today's day function
-function todaysDate () {
+// hide or display Total dive times
+function switchTotalData(disp) {
+    var x = document.getElementsByClassName("tdata");
+    var i;
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = disp;
+    }
+}
+
+// Get Initialize all feilds on start
+function init() {
+    // Set today's date in input dates
     var d = new Date(), mm = (d.getMonth() + 1), dd = d.getDate();
     
     if (dd <=9) {
@@ -105,23 +106,13 @@ function todaysDate () {
         mm='0' + mm;
     };
 date = d.getFullYear() + '-' + mm + '-' + dd;
-    data.dateSt = data.dateEn = date;
-}
-
-// hide or display Total dive times
-function switchTotalData(disp) {
-    var x = document.getElementsByClassName("tdata");
-    var i;
-    for (i = 0; i < x.length; i++) {
-      x[i].style.display = disp;
-    }
-}
-
-// BEGIN app
-// Set today's date in input dates
-todaysDate();
+data.dateSt = data.dateEn = date;
 document.querySelector("#sday").value = data.dateSt;
 document.querySelector("#eday").value = data.dateEn;
 
-/// hide display of Total dive times in the beginning
+// hide display of Total dive times in the beginning
 switchTotalData('none');
+}
+
+// BEGIN app
+init();

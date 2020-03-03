@@ -16,13 +16,13 @@ h3:hover {
     width: 100px;
     border: none;
     outline: none; 
-    animation: roll 3s infinite;
-    transform: rotate(30deg);
 }
 
 .prop:hover {
     transform: rotate(90deg);
-    filter: drop-shadow(2px 2px 2px gray)
+    filter: drop-shadow(2px 2px 2px gray);
+    animation: roll 3s infinite;
+    transform: rotate(30deg);
 }
 
 .calcdata {
